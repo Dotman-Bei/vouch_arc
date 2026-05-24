@@ -9,6 +9,10 @@ import { prisma } from "./db.js";
 
 const MINUTE_MS = 60_000;
 
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
 async function shouldAnalyzeLeader(addr: string, force = false): Promise<{ analyze: boolean; reason: string }> {
   if (force) return { analyze: true, reason: "forced" };
 
@@ -34,8 +38,8 @@ async function shouldAnalyzeLeader(addr: string, force = false): Promise<{ analy
 }
 
 async function runCycle(force = false) {
-  const run = await prisma.agentRun.create({ data: {} }).catch((e) => {
-    logger.error({ err: e?.message ?? String(e) }, "database unavailable");
+  const run = await prisma.agentRun.create({ data: {} }).catch((e: unknown) => {
+    logger.error({ err: errorMessage(e) }, "database unavailable");
     return null;
   });
   if (!run) {
@@ -94,7 +98,7 @@ async function runCycle(force = false) {
             bondAmount: bond.amount.toString(),
             lastAnalyzed: new Date(),
           },
-        }).catch((e) => { errors.push(`upsert ${addr}: ${e}`); return null; });
+        }).catch((e: unknown) => { errors.push(`upsert ${addr}: ${errorMessage(e)}`); return null; });
         if (!leaderRow) continue;
 
         const metricRow = await prisma.leaderMetric.create({
@@ -116,7 +120,7 @@ async function runCycle(force = false) {
             ipfsCid: trace.ipfsCid ?? "",
             traceJson: trace.traceJson,
           },
-        }).catch((e) => { errors.push(`metric ${addr}: ${e}`); return null; });
+        }).catch((e: unknown) => { errors.push(`metric ${addr}: ${errorMessage(e)}`); return null; });
         if (!metricRow) continue;
 
         const dispatch_ = await dispatch(analysis, trace);
@@ -140,7 +144,7 @@ async function runCycle(force = false) {
               txHash: dispatch_.slashTx,
               blockNumber: BigInt(receipt?.blockNumber ?? 0),
             },
-          }).catch((e) => errors.push(`slashEvent ${addr}: ${e}`));
+          }).catch((e: unknown) => errors.push(`slashEvent ${addr}: ${errorMessage(e)}`));
           await notifySlash(analysis, dispatch_, bond.handle);
         }
 
@@ -187,10 +191,10 @@ async function main() {
     minIntervalMinutes: config.AGENT_MIN_ANALYSIS_INTERVAL_MINUTES,
   }, "Vouch agent scheduled");
   cron.schedule(config.AGENT_CRON, () => {
-    runCycle().catch((e) => logger.error({ err: String(e) }, "cron run failed"));
+    runCycle().catch((e: unknown) => logger.error({ err: errorMessage(e) }, "cron run failed"));
   });
   // Kick off one immediate run.
   await runCycle(force);
 }
 
-main().catch((e) => { logger.error({ err: String(e) }, "fatal"); process.exit(1); });
+main().catch((e: unknown) => { logger.error({ err: errorMessage(e) }, "fatal"); process.exit(1); });
