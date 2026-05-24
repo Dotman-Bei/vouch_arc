@@ -1,0 +1,41 @@
+{
+  "name": "vouch",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Copy trading where the leader bleeds first. AI-curated, bond-backed copy trading on Arc.",
+  "workspaces": [
+    "contracts",
+    "agent",
+    "web"
+  ],
+  "scripts": {
+    "contracts:build": "pnpm --filter contracts build",
+    "contracts:test": "pnpm --filter contracts test",
+    "contracts:deploy": "pnpm --filter contracts deploy:arc",
+    "contracts:seed": "pnpm --filter contracts seed:arc",
+    "contracts:redeploy-vault": "pnpm --filter contracts redeploy-vault:arc",
+    "contracts:redeploy-registry": "pnpm --filter contracts redeploy-registry:arc",
+    "preflight": "node scripts/preflight.mjs",
+    "preflight:deploy": "node scripts/preflight.mjs deploy",
+    "preflight:agent": "node scripts/preflight.mjs contracts agent",
+    "preflight:web": "node scripts/preflight.mjs contracts web",
+    "status:live": "pnpm --filter web exec dotenv -e ../.env -- node ../scripts/live-status.mjs",
+    "agent:dev": "pnpm --filter agent dev",
+    "agent:run": "pnpm --filter agent run-once",
+    "agent:force": "pnpm --filter agent run-force",
+    "web:dev": "pnpm --filter web dev",
+    "web:build": "pnpm --filter web build",
+    "db:migrate": "pnpm --filter agent prisma:migrate",
+    "db:deploy": "pnpm --filter agent prisma:deploy",
+    "db:reset": "pnpm --filter agent prisma:reset",
+    "db:studio": "pnpm --filter agent prisma:studio",
+    "db:generate": "pnpm --filter agent prisma:generate && pnpm --filter web prisma:generate"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^11.0.0"
+  }
+}

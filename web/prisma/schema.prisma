@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Leader {
+  id            String          @id @default(uuid())
+  address       String          @unique
+  hlWallet      String
+  handle        String
+  bondAmount    Decimal         @default(0)
+  registeredAt  DateTime        @default(now())
+  lastAnalyzed  DateTime?
+  metrics       LeaderMetric[]
+  slashes       SlashEvent[]
+}
+
+model LeaderMetric {
+  id                String   @id @default(uuid())
+  leader            Leader   @relation(fields: [leaderId], references: [id])
+  leaderId          String
+  computedAt        DateTime @default(now())
+  sharpe30d         Float
+  sortino30d        Float
+  maxDrawdown       Float
+  winRate           Float
+  profitFactor      Float
+  return24hBps      Int
+  return7dBps       Int
+  regimeAlpha       Float
+  degradationScore  Int
+  verdict           String   // 'follow' | 'watch' | 'avoid'
+  confidence        Float
+  slashRisk         String   // 'low' | 'medium' | 'high'
+  reasonHash        String
+  ipfsCid           String
+  traceJson         String   @default("")
+
+  @@index([leaderId, computedAt])
+  @@index([reasonHash])
+}
+
+model SlashEvent {
+  id           String   @id @default(uuid())
+  leader       Leader   @relation(fields: [leaderId], references: [id])
+  leaderId     String
+  slashBps     Int
+  slashAmount  Decimal
+  reasonHash   String
+  ipfsCid      String
+  txHash       String
+  blockNumber  BigInt
+  timestamp    DateTime @default(now())
+}
+
+model AgentRun {
+  id                String    @id @default(uuid())
+  startedAt         DateTime  @default(now())
+  finishedAt        DateTime?
+  leadersAnalyzed   Int       @default(0)
+  slashesTriggered  Int       @default(0)
+  avgSharpe         Float     @default(0)
+  newTraces         Int       @default(0)
+  errors            String[]  @default([])
+}
+
+model User {
+  id             String   @id @default(uuid())
+  walletAddress  String?  @unique
+  circleUserId   String   @unique
+  circleWalletId String?
+  email          String?
+  createdAt      DateTime @default(now())
+}

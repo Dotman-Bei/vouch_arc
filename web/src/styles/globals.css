@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Agora design tokens ─────────────────────────────────────────────────── */
+:root {
+  --bg-primary:   #0c0c0a;
+  --bg-secondary: #141412;
+  --bg-tertiary:  #1a1a17;
+  --bg-hover:     #1f1f1c;
+
+  --text-primary:   #f0ede6;
+  --text-secondary: #8a877e;
+  --text-tertiary:  #5a574f;
+  --text-inverse:   #0c0c0a;
+
+  --accent-green:     #c8e665;
+  --accent-green-dim: #8ba845;
+  --accent-green-bg:  #1e2610;
+  --accent-amber:     #e8b84a;
+  --accent-amber-bg:  #221a0a;
+
+  --status-good:   #6dbf7e;
+  --status-warn:   #e8b84a;
+  --status-danger: #d96b5a;
+
+  --border-default: rgba(240, 237, 230, 0.08);
+  --border-strong:  rgba(240, 237, 230, 0.16);
+  --border-accent:  #c8e665;
+}
+
+/* Background lives on <html> only so the fixed -z-10 DotGrid layer
+   (a child of <body>) paints above it instead of being hidden behind
+   an opaque <body> background. <body> stays transparent. */
+html {
+  background: var(--bg-primary);
+}
+html, body {
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', 'IBM Plex Mono', 'Space Mono', 'Courier New', Courier, monospace;
+  font-size: 15px;
+  line-height: 1.7;
+  letter-spacing: normal;
+  -webkit-font-smoothing: antialiased;
+}
+body { background: transparent; }
+
+* { box-sizing: border-box; }
+a { color: inherit; text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 3px; transition: color 0.15s; }
+a:hover { color: var(--accent-green); text-decoration-color: var(--accent-green); }
+
+/* ─── Reusable component classes ──────────────────────────────────────────── */
+@layer components {
+  .label {
+    @apply uppercase text-xs text-fg-secondary tracking-[0.10em];
+  }
+  .counter {
+    @apply text-xs text-accent-green tracking-[0.10em];
+  }
+  .card {
+    @apply bg-bg-secondary border border-line p-6 rounded-card;
+  }
+  .callout {
+    @apply bg-bg-secondary py-6 px-8;
+    border-left: 3px solid var(--accent-green);
+  }
+  .btn-primary {
+    @apply uppercase font-bold text-sm tracking-[0.06em] px-5 py-2.5 rounded-sm transition-colors;
+    background: var(--accent-green);
+    color: var(--text-inverse);
+  }
+  .btn-primary:hover { background: var(--accent-green-dim); }
+  .btn-ghost {
+    @apply uppercase font-bold text-sm tracking-[0.06em] px-5 py-2.5 rounded-sm border border-line-strong transition-colors;
+    background: transparent;
+    color: var(--text-primary);
+  }
+  .btn-ghost:hover { border-color: var(--accent-green); color: var(--accent-green); }
+  .input {
+    @apply bg-bg-tertiary border border-line text-fg-primary px-3.5 py-2.5 rounded-sm w-full outline-none;
+    font-family: inherit;
+  }
+  .input:focus { border-color: var(--accent-green); }
+  .em-list { list-style: none; padding-left: 20px; }
+  .em-list > li { position: relative; }
+  .em-list > li::before {
+    content: "—";
+    position: absolute;
+    left: -20px;
+    color: var(--text-tertiary);
+  }
+  .badge {
+    @apply uppercase text-xs font-bold tracking-[0.08em] px-2 py-[3px] rounded-sm inline-block;
+  }
+  .badge-follow { background: var(--accent-green-bg); color: var(--accent-green); }
+  .badge-watch  { background: var(--accent-amber-bg); color: var(--accent-amber); }
+  .badge-avoid  { background: #1e0e0a;                 color: var(--status-danger); }
+}
+
+/* Numeric / tabular */
+.tabular { font-variant-numeric: tabular-nums; }

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" shape-rendering="geometricPrecision">
+  <rect width="64" height="64" rx="12" fill="#0c0c0a"/>
+  <path d="M14 16 L32 50 L50 16"
+        fill="none"
+        stroke="#c8e665"
+        stroke-width="8"
+        stroke-linecap="square"
+        stroke-linejoin="miter"/>
+  <path d="M22 16 L32 34 L42 16"
+        fill="none"
+        stroke="#0c0c0a"
+        stroke-width="2"
+        stroke-linecap="square"
+        stroke-linejoin="miter"/>
+</svg>

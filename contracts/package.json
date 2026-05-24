@@ -1,0 +1,24 @@
+{
+  "name": "contracts",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:arc": "hardhat run scripts/deploy.ts --network arc",
+    "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "seed:arc": "hardhat run scripts/seed-leader.ts --network arc",
+    "redeploy-vault:arc": "hardhat run scripts/redeploy-vault.ts --network arc",
+    "redeploy-registry:arc": "hardhat run scripts/redeploy-registry.ts --network arc",
+    "node": "hardhat node"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.0.2",
+    "@types/node": "^20.11.0",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.0"
+  }
+}
